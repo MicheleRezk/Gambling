@@ -16,6 +16,7 @@ builder.Services.AddControllers(options =>
 {
     options.SuppressAsyncSuffixInActionNames = false;
 });
+builder.Services.AddSingleton<IPlayerServices, PlayerServices>();
 builder.Services.AddSingleton<IBetServices, BetServices>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

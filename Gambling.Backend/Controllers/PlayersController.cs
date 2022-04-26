@@ -13,26 +13,17 @@ namespace Gambling.Backend.Controllers;
 public class PlayersController : ControllerBase
 {
     private readonly IMapper _mapper;
-    private readonly IRepository<Player> _playersRepo;
+    private readonly IPlayerServices _playerServices;
     private readonly ServiceSettings _serviceSettings;
 
     public PlayersController(
         IMapper mapper,
-        IRepository<Player> playersRepo,
+        IPlayerServices playerServices,
         IOptions<ServiceSettings> serviceSettings)
     {
         this._mapper = mapper;
-        this._playersRepo = playersRepo;
+        this._playerServices = playerServices;
         this._serviceSettings = serviceSettings.Value;
-    }
-
-    // GET /players
-    [HttpGet]
-    public async Task<ActionResult<IEnumerable<PlayerDto>>> GetPlayers()
-    {
-        Console.WriteLine("--> Getting Players....");
-        var players = await _playersRepo.GetAllAsync();
-        return Ok(_mapper.Map<IEnumerable<PlayerDto>>(players));
     }
 
     // GET /players/{id}
@@ -40,7 +31,7 @@ public class PlayersController : ControllerBase
     public async Task<ActionResult<PlayerDto>> GetByIdAsync(Guid id)
     {
         Console.WriteLine("--> Getting Player By Id....");
-        var player = await _playersRepo.GetAsync(id);
+        var player = await _playerServices.GetPlayerAsync(id);
 
         if (player == null)
         {
@@ -64,8 +55,8 @@ public class PlayersController : ControllerBase
             Bets = new List<Bet>()
         };
 
-        await _playersRepo.CreateAsync(player);
+        await _playerServices.CreatePlayerAsync(player);
 
-        return CreatedAtAction(nameof(GetByIdAsync), new { id = player.Id }, player);
+        return CreatedAtAction(nameof(GetByIdAsync), new { id = player.Id }, _mapper.Map<PlayerDto>(player));
     }
 }

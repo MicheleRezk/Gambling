@@ -19,7 +19,7 @@ public class BetServices : IBetServices
         this._mapper = mapper;
         this._playersRepo = playersRepo;
     }
-
+    
     /// <summary>
     /// Get Random number between min & max
     /// </summary>

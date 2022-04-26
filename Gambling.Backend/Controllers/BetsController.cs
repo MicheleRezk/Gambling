@@ -10,12 +10,12 @@ namespace Gambling.Backend.Controllers;
 [Route("api/[controller]")]
 public class BetsController : ControllerBase
 {
-    private readonly IRepository<Player> _playersRepo;
     private readonly IBetServices _betServices;
+    private readonly IPlayerServices _playerServices;
 
-    public BetsController(IRepository<Player> playersRepo, IBetServices betServices)
+    public BetsController(IPlayerServices playerServices, IBetServices betServices)
     {
-        this._playersRepo = playersRepo;
+        this._playerServices = playerServices;
         this._betServices = betServices;
     }
 
@@ -23,12 +23,12 @@ public class BetsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BetResultDto>> PostAsync(CreateBetDto createBetDto)
     {
-        //TODO: random min & max can be added to configuration 
+        //TODO: random min & max can be added to configuration and move it to utility class 
         var rand = _betServices.GetRandomNumber(0, 9);
         Console.WriteLine($"--> Creating a new bet for player, random number:{rand}, bet info: {createBetDto}");
 
         //Validate player request
-        var player = await _playersRepo.GetAsync(createBetDto.PlayerId);
+        var player = await _playerServices.GetPlayerAsync(createBetDto.PlayerId);
         if (player == null)
         {
             return BadRequest($"Player with Id {createBetDto.PlayerId} not exists");
@@ -53,7 +53,8 @@ public class BetsController : ControllerBase
         var result = _betServices.CheckPlayerBet(rand, player.Account, createBetDto);
 
         //Save to DB
-        _betServices.SavePlayerBet(player, createBetDto, result.Account, Enum.Parse<Status>(result.Status));
+        if (result != null)
+            await _betServices.SavePlayerBet(player, createBetDto, result.Account, Enum.Parse<Status>(result.Status));
 
         return Ok(result);
     }
