@@ -18,6 +18,7 @@ builder.Services.AddControllers(options =>
 });
 builder.Services.AddSingleton<IPlayerServices, PlayerServices>();
 builder.Services.AddSingleton<IBetServices, BetServices>();
+builder.Services.AddSingleton<ISerializerService, SerializerService>();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -39,3 +40,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+public partial class Program { }

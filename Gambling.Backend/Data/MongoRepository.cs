@@ -41,4 +41,9 @@ public class MongoRepository<T> : IRepository<T> where T : IEntity
         FilterDefinition<T> filter = _filterBuilder.Eq(existingEntity => existingEntity.Id, entity.Id);
         await _dbCollection.ReplaceOneAsync(filter, entity);
     }
+    public async Task RemoveAsync(Guid id)
+    {
+        FilterDefinition<T> filter = _filterBuilder.Eq(existingEntity => existingEntity.Id, id);
+        await _dbCollection.DeleteOneAsync(filter);
+    }
 }

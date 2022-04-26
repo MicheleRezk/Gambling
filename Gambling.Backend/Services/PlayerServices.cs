@@ -19,5 +19,9 @@ namespace Gambling.Backend.Services
         {
             await _playersRepo.CreateAsync(player);
         }
+        public async Task DeletePlayerAsync(Guid playerId)
+        {
+            await _playersRepo.RemoveAsync(playerId);
+        }
     }
 }

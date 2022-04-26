@@ -6,5 +6,6 @@ namespace Gambling.Backend.Common
     {
         Task<Player> GetPlayerAsync(Guid playerId);
         Task CreatePlayerAsync(Player player);
+        Task DeletePlayerAsync(Guid playerId);
     }
 }
