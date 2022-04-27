@@ -20,8 +20,11 @@ public static class Extensions
         services.AddSingleton(serviceProvider =>
         {
             var configuration = serviceProvider.GetService<IConfiguration>();
+            var host = configuration["MongoHost"] ?? "localhost";
+            var port = configuration["MongoPort"] ?? "27017";
             var serviceSettings = configuration.GetSection(nameof(ServiceSettings)).Get<ServiceSettings>();
-            var mongoDbSettings = configuration.GetSection(nameof(MongoDbSettings)).Get<MongoDbSettings>();
+            var mongoDbSettings = new MongoDbSettings { Host = host, Port = port };
+            Console.WriteLine($"DB ConnectionString: {mongoDbSettings.ConnectionString}");
             var mongoClient = new MongoClient(mongoDbSettings.ConnectionString);
             return mongoClient.GetDatabase(serviceSettings.ServiceName);
         });
